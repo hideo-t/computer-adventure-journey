@@ -66,80 +66,6 @@
       margin: 28px auto 0;
     }
 
-    /* ─── Digest Carousel ─── */
-    .carousel-wrap {
-      background: linear-gradient(180deg, #0f1a2f 0%, #0a0e18 100%);
-      padding: 24px 0 20px;
-      overflow: hidden;
-    }
-    .carousel-track {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      padding: 0 calc((100vw - min(85vw, 600px)) / 2);
-      scrollbar-width: none;
-    }
-    .carousel-track::-webkit-scrollbar { display: none; }
-    .carousel-slide {
-      flex: 0 0 min(85vw, 280px);
-      scroll-snap-align: center;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-      text-decoration: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      transition: transform 0.2s;
-      aspect-ratio: 3/2;
-    }
-    .carousel-slide:active { transform: scale(0.97); }
-    .carousel-slide img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .carousel-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      padding: 28px 12px 10px;
-      color: #fff;
-      font-size: 0.85rem;
-      font-family: var(--serif);
-      line-height: 1.4;
-    }
-    .carousel-ch {
-      display: inline-block;
-      font-size: 0.7rem;
-      color: var(--gold);
-      margin-right: 6px;
-      font-family: var(--sans);
-      letter-spacing: 0.06em;
-    }
-    .carousel-dots {
-      text-align: center;
-      padding-top: 12px;
-    }
-    .carousel-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.25);
-      margin: 0 4px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.3s;
-    }
-    .carousel-dot.active {
-      background: var(--gold);
-      transform: scale(1.3);
-    }
-    @media (min-width: 600px) {
-      .carousel-slide { flex: 0 0 280px; }
-      .carousel-track { padding: 0 calc((100vw - 900px) / 2); gap: 18px; }
-    }
-
     /* ─── Navigation ─── */
     .nav-bar {
       position: sticky; top: 0; z-index: 100;
@@ -483,6 +409,10 @@
         <h2 class="chapter-title">パソコンの扉を開く</h2>
       </div>
       
+        <div class="chapter-image">
+          <img src="images/chapter_01.png" alt="第1章 挿絵"
+               loading="lazy" />
+        </div>
       <div class="chapter-body">
         <p>第1章　パソコンの扉を開く</p>
 
@@ -1125,46 +1055,6 @@
       document.getElementById('ttsSpeedVal').textContent = v + 'x';
     }
     if (synth) synth.onvoiceschanged = () => synth.getVoices();
-
-    /* ─── Carousel dot tracking + auto-advance ─── */
-    (function() {
-      const track = document.getElementById('carouselTrack');
-      if (!track) return;
-      const dots = track.parentElement.querySelectorAll('.carousel-dot');
-      const slides = track.querySelectorAll('.carousel-slide');
-      if (slides.length < 1) return;
-
-      function updateDots() {
-        const scrollLeft = track.scrollLeft;
-        const slideW = slides[0].offsetWidth + 14; // gap
-        const idx = Math.round(scrollLeft / slideW);
-        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-      }
-
-      track.addEventListener('scroll', updateDots, { passive: true });
-      dots.forEach(d => d.addEventListener('click', () => {
-        const idx = parseInt(d.dataset.idx);
-        const slideW = slides[0].offsetWidth + 14;
-        track.scrollTo({ left: idx * slideW, behavior: 'smooth' });
-      }));
-
-      // Auto-advance every 4s (pause on touch)
-      let autoTimer = null;
-      let paused = false;
-      function autoAdvance() {
-        if (paused) return;
-        const slideW = slides[0].offsetWidth + 14;
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        const next = track.scrollLeft + slideW;
-        track.scrollTo({ left: next > maxScroll ? 0 : next, behavior: 'smooth' });
-      }
-      autoTimer = setInterval(autoAdvance, 4000);
-      track.addEventListener('touchstart', () => { paused = true; clearInterval(autoTimer); }, { passive: true });
-      track.addEventListener('touchend', () => {
-        paused = false;
-        autoTimer = setInterval(autoAdvance, 4000);
-      }, { passive: true });
-    })();
 
   </script>
 </body>
